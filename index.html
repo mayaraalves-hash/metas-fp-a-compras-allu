@@ -429,10 +429,18 @@ function renderMetaCard(m, p, editable) {
         <span class="pill" style="background:${d.bg};color:${d.tc};border-color:${d.c}">até ${m.prazo} · ${d.lbl}</span>
       </div>`;
 
+  const obsPublished = m.obs_published || '';
+  const obsDraft = m.obs || '';
+  const hasPublished = obsPublished.trim().length > 0;
   const obsHtml = editable
-    ? `<div class="sec-lbl">Observações</div>
-       <textarea class="obs-ta" onchange="setMetaField('${m.id}','obs',this.value)" placeholder="Bloqueios, próximos passos...">${m.obs||''}</textarea>`
-    : (m.obs ? `<div class="sec-lbl">Observações</div><div class="obs-text">${m.obs}</div>` : '');
+    ? `<div class="sec-lbl" style="margin-top:12px">Observações</div>
+       <textarea class="obs-ta" id="obs-draft-${m.id}" onchange="setMetaField('${m.id}','obs',this.value)" placeholder="Escreva aqui (rascunho — só você vê)...">${obsDraft}</textarea>
+       <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+         <button class="btn btn-primary btn-sm" onclick="publishObs('${m.id}')">Publicar para colaboradora</button>
+         ${hasPublished ? `<span style="font-size:11px;color:#085041;background:#E1F5EE;padding:3px 9px;border-radius:99px;border:1px solid #A4EDC2">✓ Publicado: "${obsPublished.substring(0,40)}${obsPublished.length>40?'...':''}"</span>
+         <button class="btn btn-sm btn-danger" onclick="unpublishObs('${m.id}')">Retirar</button>` : '<span style="font-size:11px;color:#aaa">Nenhuma observação publicada</span>'}
+       </div>`
+    : (hasPublished ? `<div class="sec-lbl">Observação da gestora</div><div class="obs-text" style="border-left:3px solid #1A5C33;padding-left:10px">${obsPublished}</div>` : '');
 
   const removeBtn = editable ? `<div class="meta-actions"><button class="btn btn-danger btn-sm" onclick="removeMeta('${p.id}','${m.id}')">Remover meta</button></div>` : '';
 
@@ -574,6 +582,26 @@ function switchTab(name, btn) {
   btn.classList.add('on');
   document.getElementById('tab-'+name).classList.add('on');
   if (name === 'resumo') renderResumo();
+}
+
+function publishObs(mid) {
+  const r = getMeta(mid); if (!r) return;
+  const ta = document.getElementById('obs-draft-'+mid);
+  const val = ta ? ta.value : r.m.obs || '';
+  if (!val.trim()) { showToast('Escreva algo antes de publicar.', true); return; }
+  r.m.obs_published = val;
+  r.m.obs = val;
+  markDirty();
+  renderApp();
+  showToast('Observação publicada!');
+}
+
+function unpublishObs(mid) {
+  const r = getMeta(mid); if (!r) return;
+  r.m.obs_published = '';
+  markDirty();
+  renderApp();
+  showToast('Observação retirada.');
 }
 
 function renderResumo() {
