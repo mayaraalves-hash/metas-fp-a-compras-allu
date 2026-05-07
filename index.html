@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metas Q2 2026 — Allu</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#F4F4F2;color:#111;min-height:100vh}
+/* Login */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+.login-card{background:#fff;border:1px solid #E5E5E2;border-radius:16px;padding:2.5rem 2rem;width:100%;max-width:380px;text-align:center}
+.login-logo{background:#1A5C33;color:#fff;font-size:18px;font-weight:700;padding:6px 16px;border-radius:6px;display:inline-block;margin-bottom:1.5rem;letter-spacing:.04em}
+.login-title{font-size:20px;font-weight:700;margin-bottom:.5rem}
+.login-sub{font-size:13px;color:#888;margin-bottom:1.75rem}
+.login-input{width:100%;font-size:14px;padding:10px 14px;border-radius:9px;border:1px solid #E0E0DC;background:#FAFAF8;font-family:inherit;margin-bottom:10px}
+.login-input:focus{outline:none;border-color:#1A5C33}
+.login-btn{width:100%;font-size:14px;padding:11px;border-radius:9px;border:none;background:#1A5C33;color:#fff;cursor:pointer;font-family:inherit;font-weight:600;margin-bottom:10px}
+.login-btn:hover{background:#145228}
+.login-msg{font-size:12px;color:#888;margin-top:8px;min-height:18px}
+.login-msg.error{color:#B91C1C}
+.login-msg.success{color:#085041}
+/* App */
+.app{display:none;max-width:1000px;margin:0 auto;padding:2rem 1rem}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:1.5rem}
+.topbar-title{font-size:21px;font-weight:700}
+.topbar-sub{font-size:12px;color:#888;margin-top:2px}
+.topbar-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.user-pill{font-size:12px;color:#555;background:#F0F0EC;padding:5px 12px;border-radius:99px;border:1px solid #E0E0DC}
+.btn{font-size:12px;padding:6px 13px;border-radius:7px;border:1px solid #DDD;background:#fff;cursor:pointer;font-family:inherit;color:#333;white-space:nowrap}
+.btn:hover{background:#EEEEEA}
+.btn-primary{background:#1A5C33;color:#fff;border-color:#1A5C33}
+.btn-primary:hover{background:#145228}
+.btn-danger{background:#FEF0F0;color:#B91C1C;border-color:#FCA5A5}
+.btn-ghost{background:transparent;border:1px dashed #CCC;color:#888}
+.btn-ghost:hover{border-color:#1A5C33;color:#1A5C33;background:#F0FAF4}
+.btn-sm{font-size:11px;padding:3px 9px;border-radius:5px}
+.tabs{display:flex;border-bottom:2px solid #E5E5E2;margin-bottom:1.5rem}
+.tab{font-size:13px;padding:8px 16px;border:none;background:none;cursor:pointer;font-family:inherit;color:#888;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tab.on{color:#1A5C33;border-bottom-color:#1A5C33;font-weight:600}
+.tabpane{display:none}
+.tabpane.on{display:block}
+.sum-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:1.5rem}
+.sum-card{background:#fff;border:1px solid #E5E5E2;border-radius:11px;padding:12px 14px}
+.sum-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-bottom:6px}
+.sum-name{font-size:13px;font-weight:600}
+.sum-area{font-size:10px;color:#999;margin-bottom:8px}
+.sum-bar{height:4px;background:#eee;border-radius:99px;overflow:hidden;margin-bottom:4px}
+.sum-fill{height:100%;border-radius:99px}
+.sum-pct{font-size:13px;font-weight:700}
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:1.25rem}
+.filter-bar span{font-size:11px;color:#888}
+.fbtn{font-size:11px;padding:4px 12px;border-radius:99px;border:1px solid #DDD;background:#fff;cursor:pointer;font-family:inherit;color:#555}
+.fbtn.on{background:#1A5C33;color:#fff;border-color:#1A5C33}
+.person-block{margin-bottom:1.5rem}
+.person-head{display:flex;align-items:center;gap:10px;margin-bottom:.75rem;padding-bottom:.6rem;border-bottom:1px solid #E5E5E2}
+.p-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.p-name{font-size:15px;font-weight:700}
+.p-area{font-size:11px;color:#888}
+.meta-card{background:#fff;border:1px solid #E5E5E2;border-left:3px solid #E5E5E2;border-radius:11px;padding:1.1rem 1.2rem;margin-bottom:.65rem}
+.meta-title{font-size:14px;font-weight:700;margin-bottom:6px;line-height:1.4}
+.meta-title-input{font-size:14px;font-weight:700;width:100%;border:1px solid #E5E5E2;border-radius:6px;padding:4px 8px;font-family:inherit;background:#FAFAF8;margin-bottom:6px}
+.meta-title-input:focus{outline:none;border-color:#1A5C33}
+.pill{font-size:10px;padding:2px 8px;border-radius:99px;border:1px solid;white-space:nowrap;font-weight:500}
+.pill-peso{background:#F5F5F2;color:#666;border-color:#DDD}
+.sec-lbl{font-size:10px;font-weight:700;color:#999;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;margin-top:12px}
+.desc-text{font-size:11px;color:#777;line-height:1.6;margin-bottom:8px}
+.desc-area{width:100%;font-size:11px;padding:8px 10px;border-radius:8px;border:1px solid #E5E5E2;background:#FAFAF8;color:#555;font-family:inherit;resize:vertical;min-height:52px;line-height:1.55}
+.desc-area:focus{outline:none;border-color:#1A5C33}
+.tl{display:flex;flex-direction:column;gap:5px;margin-bottom:6px}
+.tl-row{display:flex;align-items:center;gap:7px}
+.tl-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.tl-date{font-size:10px;color:#aaa;width:52px;flex-shrink:0}
+.tl-text{font-size:11px;color:#666;flex:1}
+.tl-inp-date{font-size:10px;width:60px;flex-shrink:0;padding:3px 6px;border:1px solid #E5E5E2;border-radius:5px;background:#FAFAF8;font-family:inherit;text-align:center}
+.tl-inp-date:focus{outline:none;border-color:#1A5C33}
+.tl-inp-text{font-size:11px;flex:1;padding:4px 8px;border:1px solid #E5E5E2;border-radius:5px;background:#FAFAF8;font-family:inherit}
+.tl-inp-text:focus{outline:none;border-color:#1A5C33}
+.tl-sel{font-size:10px;padding:3px 7px;border-radius:99px;border:1px solid;cursor:pointer;font-family:inherit;flex-shrink:0}
+.tl-del{font-size:11px;padding:2px 6px;border-radius:4px;border:none;background:none;cursor:pointer;color:#CCC;flex-shrink:0}
+.tl-del:hover{color:#B91C1C;background:#FEF0F0}
+.crit-box{background:#FAFAF8;border:1px solid #EEEEEA;border-radius:9px;padding:10px 12px}
+.crit-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.crit-row:last-child{margin-bottom:0}
+.crit-pct{font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;border:1px solid;white-space:nowrap;flex-shrink:0;min-width:46px;text-align:center}
+.crit-status-badge{font-size:10px;padding:3px 8px;border-radius:99px;border:1px solid;white-space:nowrap;flex-shrink:0}
+.crit-sel{font-size:10px;padding:3px 8px;border-radius:99px;border:1px solid;cursor:pointer;font-family:inherit;flex-shrink:0}
+.crit-text{font-size:11px;color:#555;flex:1;line-height:1.4}
+.crit-inp{font-size:11px;flex:1;padding:5px 9px;border-radius:7px;border:1px solid #E5E5E2;background:#fff;font-family:inherit}
+.crit-inp:focus{outline:none;border-color:#1A5C33}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.field-lbl{font-size:10px;font-weight:700;color:#999;letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+.field-sel{font-size:12px;padding:7px 10px;border-radius:8px;border:1px solid #E5E5E2;background:#FAFAF8;color:#111;font-family:inherit;cursor:pointer;width:100%}
+.field-sel:focus{outline:none;border-color:#1A5C33}
+.field-inp{font-size:12px;padding:7px 10px;border-radius:8px;border:1px solid #E5E5E2;background:#FAFAF8;color:#111;font-family:inherit;width:100%}
+.field-inp:focus{outline:none;border-color:#1A5C33}
+.ating-row{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.ating-badge{font-size:11px;font-weight:600;padding:4px 11px;border-radius:99px;border:1px solid}
+.prog-track{height:4px;background:#F0F0EC;border-radius:99px;margin-top:10px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px}
+.obs-ta{width:100%;font-size:11px;padding:8px 10px;border-radius:8px;border:1px solid #E5E5E2;background:#FAFAF8;color:#111;font-family:inherit;resize:vertical;min-height:52px;line-height:1.55;margin-top:4px}
+.obs-ta:focus{outline:none;border-color:#1A5C33}
+.obs-text{font-size:11px;color:#777;line-height:1.6;background:#F5F5F2;border-radius:7px;padding:8px 10px;margin-top:4px}
+.peso-inp{font-size:12px;width:50px;padding:5px 8px;border-radius:7px;border:1px solid #E5E5E2;background:#FAFAF8;font-family:inherit;text-align:center}
+.peso-inp:focus{outline:none;border-color:#1A5C33}
+.meta-actions{display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:1px dashed #EEEEEA}
+.apuracao{background:#FAFAF8;border:1px solid #E5E5E2;border-radius:10px;padding:1rem 1.2rem;margin-top:.5rem}
+.apuracao table{width:100%;border-collapse:collapse;font-size:12px}
+.apuracao th{text-align:left;padding:6px 10px;font-size:10px;font-weight:700;color:#999;letter-spacing:.04em;text-transform:uppercase;border-bottom:2px solid #E5E5E2;background:#F0F0EC}
+.apuracao td{padding:8px 10px;border-bottom:1px solid #F0F0EC;vertical-align:middle}
+.apuracao tfoot td{padding:9px 10px;border-top:2px solid #E5E5E2;font-weight:700;font-size:13px}
+.divider{border:none;border-top:1px solid #E5E5E2;margin:1.25rem 0}
+.res-table{width:100%;border-collapse:collapse;font-size:12px}
+.res-table th{text-align:left;padding:8px 12px;font-size:10px;font-weight:700;color:#999;letter-spacing:.04em;text-transform:uppercase;border-bottom:2px solid #E5E5E2;background:#FAFAF8}
+.res-table td{padding:9px 12px;border-bottom:1px solid #F0F0EC;vertical-align:middle}
+.rank-card{background:#fff;border:1px solid #E5E5E2;border-radius:10px;padding:.9rem 1.1rem;margin-bottom:.5rem;display:flex;align-items:center;gap:12px}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#1A5C33;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;display:none;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+.loading{text-align:center;padding:3rem;color:#888;font-size:14px}
+.save-btn-wrap{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:100;display:none}
+.av-teal{background:#E1F5EE;color:#085041}
+.rv-section{background:#fff;border:1px solid #E5E5E2;border-radius:11px;padding:1.1rem 1.2rem;margin-bottom:1rem}
+.rv-section-title{font-size:13px;font-weight:700;color:#111;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
+.rv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:1rem}
+.rv-month{background:#FAFAF8;border:1px solid #EEEEEA;border-radius:9px;padding:10px 12px}
+.rv-month-lbl{font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.rv-field{margin-bottom:6px}
+.rv-field label{font-size:10px;color:#888;display:block;margin-bottom:2px}
+.rv-inp{font-size:12px;padding:5px 8px;border-radius:6px;border:1px solid #E5E5E2;background:#fff;font-family:inherit;width:100%;text-align:right}
+.rv-inp:focus{outline:none;border-color:#1A5C33}
+.rv-inp[readonly]{background:#F5F5F2;color:#555;cursor:default}
+.rv-result{background:#E8F5EE;border:1px solid #A4EDC2;border-radius:9px;padding:10px 12px;margin-top:8px}
+.rv-result-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:12px}
+.rv-result-row:last-child{margin-bottom:0;font-weight:700;font-size:13px;border-top:1px solid #A4EDC2;padding-top:6px;margin-top:6px}
+.rv-formula{font-size:10px;color:#888;font-style:italic;margin-top:6px;line-height:1.5;background:#F5F5F2;border-radius:6px;padding:6px 8px}
+.rv-config-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.rv-person-card{background:#FAFAF8;border:1px solid #EEEEEA;border-radius:9px;padding:10px 12px}
+.rv-person-name{font-size:12px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.chart-wrap{background:#FAFAF8;border:1px solid #EEEEEA;border-radius:9px;padding:12px;margin-top:1rem}
+.chart-bars{display:flex;gap:8px;align-items:flex-end;height:120px;margin-bottom:6px}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.chart-bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height .3s}
+.chart-bar-lbl{font-size:9px;color:#888;white-space:nowrap}
+.chart-bar-val{font-size:9px;font-weight:700}
+.av-purple{background:#EEEDFE;color:#3C3489}
+.av-coral{background:#FAECE7;color:#712B13}
+.av-blue{background:#E3F2FD;color:#0C447C}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">allu</div>
+    <div class="login-title">Metas Q2 2026</div>
+    <div class="login-sub">Entre com seu e-mail corporativo</div>
+    <input class="login-input" type="email" id="login-email" placeholder="seu@allugator.com" />
+    <input class="login-input" type="password" id="login-pass" placeholder="Senha" />
+    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <div id="login-msg" class="login-msg"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app-screen">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Metas Q2 2026</div>
+      <div class="topbar-sub">Abril — Junho · FP&amp;A e Compras</div>
+    </div>
+    <div class="topbar-right">
+      <span class="user-pill" id="user-pill">—</span>
+      <button class="btn" id="save-btn" onclick="saveData()" style="display:none">Salvar alterações</button>
+      <button class="btn" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+
+  <div id="app-body"><div class="loading">Carregando...</div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://jfpddeqwxidznttxttns.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_3Z18UtLg7EFqf1LwOpYHtA_Tj0SWGB8';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const ST = {
+  nao:  {v:'nao', l:'Não iniciado',c:'#B4B2A9',bg:'#F5F5F2',tc:'#555'},
+  and:  {v:'and', l:'Em andamento', c:'#378ADD',bg:'#E6F1FB',tc:'#0C447C'},
+  risco:{v:'risco',l:'Em risco',    c:'#EF9F27',bg:'#FAEEDA',tc:'#633806'},
+  ok:   {v:'ok',  l:'Concluído',   c:'#1D9E75',bg:'#E1F5EE',tc:'#085041'},
+};
+const CRIT_COLORS = [
+  {c:'#EF9F27',bg:'#FAEEDA',tc:'#633806'},
+  {c:'#378ADD',bg:'#E6F1FB',tc:'#0C447C'},
+  {c:'#1D9E75',bg:'#E1F5EE',tc:'#085041'},
+];
+
+let DATA = [];
+let RV_CONFIG = null;
+let currentUser = null;
+let pessoaId = null;
+let isAdmin = false;
+let filter = 'all';
+let dirty = false;
+
+// ── Auth ──────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const msg   = document.getElementById('login-msg');
+  msg.textContent = 'Entrando...';
+  msg.className = 'login-msg';
+  const {data, error} = await sb.auth.signInWithPassword({email, password: pass});
+  if (error) { msg.textContent = 'Email ou senha incorretos.'; msg.className = 'login-msg error'; return; }
+  await initApp(data.user);
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+  location.reload();
+}
+
+async function initApp(user) {
+  currentUser = user;
+  // Get pessoa_id from user_map
+  const {data: mapRow} = await sb.from('user_map').select('pessoa_id').eq('email', user.email).single();
+  pessoaId = mapRow?.pessoa_id || null;
+  isAdmin = pessoaId === 'admin';
+
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'block';
+  document.getElementById('user-pill').textContent = user.email;
+  if (isAdmin) document.getElementById('save-btn').style.display = 'block';
+
+  await loadData();
+}
+
+async function loadData() {
+  const {data: row} = await sb.from('painel_data').select('data').eq('id', 1).single();
+  if (row && row.data && row.data.pessoas && row.data.pessoas.length > 0) {
+    DATA = row.data.pessoas;
+  } else {
+    DATA = getDefaultData();
+    if (isAdmin) await saveDataSilent();
+  }
+  if (row && row.data && row.data.rv_config) {
+    RV_CONFIG = row.data.rv_config;
+  } else {
+    RV_CONFIG = getDefaultRVConfig();
+  }
+  renderApp();
+}
+
+async function saveData() {
+  const {error} = await sb.from('painel_data').update({data: {pessoas: DATA, rv_config: RV_CONFIG}, updated_at: new Date()}).eq('id', 1);
+  if (error) { showToast('Erro ao salvar: ' + error.message, true); return; }
+  showToast('Salvo com sucesso!');
+  dirty = false;
+}
+
+async function saveDataSilent() {
+  await sb.from('painel_data').update({data: {pessoas: DATA, rv_config: RV_CONFIG}, updated_at: new Date()}).eq('id', 1);
+}
+
+function showToast(msg, err=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = err ? '#B91C1C' : '#1A5C33';
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3000);
+}
+
+// Check session on load
+sb.auth.getSession().then(({data: {session}}) => {
+  if (session) initApp(session.user);
+});
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function calcAtingFromTl(tl) {
+  const done = (tl||[]).filter(t => t.s === 'ok').length;
+  if (done === 0) return null;
+  if (done === 1) return 80;
+  if (done === 2) return 100;
+  return 120;
+}
+function scoreP(p) {
+  return Math.round(p.metas.reduce((a, m) => {
+    const at = calcAtingFromTl(m.tl);
+    if (at !== null) return a + (at * (m.peso / 100));
+    const est = ST[m.status]?.v === 'ok' ? 100 : ST[m.status]?.v === 'and' ? 50 : ST[m.status]?.v === 'risco' ? 25 : 0;
+    return a + (est * (m.peso / 100));
+  }, 0));
+}
+function sc(pct) { return pct >= 100 ? '#1D9E75' : pct >= 80 ? '#378ADD' : pct >= 50 ? '#EF9F27' : '#B4B2A9'; }
+function fc(at) { return at >= 120 ? '#1D9E75' : at >= 100 ? '#378ADD' : at >= 80 ? '#EF9F27' : '#E24B4A'; }
+function dl(prazo) {
+  const p = prazo.split('/');
+  const mm = {Jan:0,Fev:1,Mar:2,Abr:3,Mai:4,Jun:5,Jul:6,Ago:7,Set:8,Out:9,Nov:10,Dez:11,'04':3,'05':4,'06':5};
+  const d = new Date(2026, mm[p[1]] ?? 5, parseInt(p[0]));
+  const diff = Math.round((d - new Date()) / 864e5);
+  const c = diff < 0 ? '#E24B4A' : diff < 14 ? '#EF9F27' : '#1D9E75';
+  const bg = diff < 0 ? '#FCEBEB' : diff < 14 ? '#FAEEDA' : '#E1F5EE';
+  const tc = diff < 0 ? '#791F1F' : diff < 14 ? '#633806' : '#085041';
+  const lbl = diff < 0 ? Math.abs(diff)+'d atraso' : diff === 0 ? 'hoje' : diff+'d';
+  return {c, bg, tc, lbl};
+}
+function getMeta(mid) { for (const p of DATA) for (const m of p.metas) if (m.id === mid) return {p, m}; }
+function getPessoa(pid) { return DATA.find(p => p.id === pid); }
+
+// ── Render ────────────────────────────────────────────────────────────────
+function renderApp() {
+  const body = document.getElementById('app-body');
+  // Filter: admin sees all, collaborator sees only own
+  const visiblePessoas = isAdmin ? DATA : DATA.filter(p => p.id === pessoaId);
+
+  let tabsHtml = '';
+  if (isAdmin) {
+    tabsHtml = `<div class="tabs">
+      <button class="tab on" onclick="switchTab('metas',this)">Metas</button>
+      <button class="tab" onclick="switchTab('resumo',this)">Resumo</button>
+      <button class="tab" onclick="switchTab('rv',this)">RV / Histórico</button>
+    </div>`;
+  }
+
+  let filterHtml = '';
+  if (isAdmin) {
+    filterHtml = `<div class="filter-bar">
+      <span>Filtrar:</span>
+      <button class="fbtn ${filter==='all'?'on':''}" onclick="setFilter('all',this)">Todos</button>
+      ${DATA.map(p => `<button class="fbtn ${filter===p.id?'on':''}" onclick="setFilter('${p.id}',this)">${p.name}</button>`).join('')}
+    </div>`;
+  }
+
+  // Summary grid (admin only)
+  let sumHtml = '';
+  if (isAdmin) {
+    sumHtml = `<div class="sum-grid">` + DATA.map(p => {
+      const s = scoreP(p); const col = sc(s);
+      return `<div class="sum-card">
+        <div class="sum-av ${p.avc}">${p.av}</div>
+        <div class="sum-name">${p.name}</div>
+        <div class="sum-area">${p.area}</div>
+        <div class="sum-bar"><div class="sum-fill" style="width:${Math.min(s/1.2,100)}%;background:${col}"></div></div>
+        <div class="sum-pct" style="color:${col}">${s}</div>
+      </div>`;
+    }).join('') + `</div>`;
+  }
+
+  const listToShow = isAdmin ? (filter === 'all' ? DATA : DATA.filter(p => p.id === filter)) : visiblePessoas;
+
+  const metasHtml = listToShow.map((p, pi) => {
+    const s = scoreP(p); const col = sc(s);
+    const cards = p.metas.map(m => renderMetaCard(m, p, isAdmin)).join('');
+    const apuracao = buildApuracao(p, col, s);
+    const addBtn = isAdmin ? `<button class="btn btn-ghost btn-sm" onclick="addMeta('${p.id}')">+ Meta</button>` : '';
+    const removeBtn = isAdmin ? `<button class="btn btn-danger btn-sm" onclick="removePessoa('${p.id}')">Remover</button>` : '';
+    return `<div class="person-block">
+      <div class="person-head">
+        <div class="p-av ${p.avc}">${p.av}</div>
+        <div><div class="p-name">${p.name}</div><div class="p-area">${p.area}</div></div>
+        <div style="margin-left:auto;text-align:right">
+          <div style="font-size:18px;font-weight:700;color:${col}">${s}</div>
+          <div style="font-size:10px;color:#888">nota ponderada</div>
+        </div>
+        ${addBtn}${removeBtn}
+      </div>
+      ${cards}
+      ${apuracao}
+    </div>${pi < listToShow.length-1 ? '<hr class="divider">' : ''}`;
+  }).join('');
+
+  body.innerHTML = `
+    ${tabsHtml}
+    <div id="tab-metas" class="tabpane on">
+      ${sumHtml}
+      ${filterHtml}
+      <div id="main">${metasHtml}</div>
+    </div>
+    <div id="tab-resumo" class="tabpane"></div>
+  <div id="tab-rv" class="tabpane"></div>`;
+}
+
+function renderMetaCard(m, p, editable) {
+  const st = ST[m.status] || ST.nao;
+  const at = calcAtingFromTl(m.tl);
+  const atColor = at !== null ? fc(at) : '#B4B2A9';
+  const done = (m.tl||[]).filter(t => t.s === 'ok').length;
+  const prog = at !== null ? Math.min(at / 1.2, 100) : st.v === 'ok' ? 100 : st.v === 'and' ? 50 : st.v === 'risco' ? 25 : 0;
+  const d = dl(m.prazo);
+  const border = st.v === 'ok' ? '#1D9E75' : st.v === 'and' ? '#378ADD' : st.v === 'risco' ? '#EF9F27' : '#E5E5E2';
+
+  const tlHtml = (m.tl||[]).map((t, ti) => {
+    const ms = ST[t.s] || ST.nao;
+    if (editable) {
+      const stOpts = Object.values(ST).map(s => `<option value="${s.v}"${t.s===s.v?' selected':''}>${s.l}</option>`).join('');
+      return `<div class="tl-row">
+        <div class="tl-dot" style="background:${ms.c}"></div>
+        <input class="tl-inp-date" value="${t.d}" onchange="setTl('${m.id}',${ti},'d',this.value)" placeholder="data">
+        <input class="tl-inp-text" value="${t.t}" onchange="setTl('${m.id}',${ti},'t',this.value)">
+        <select class="tl-sel" style="border-color:${ms.c};color:${ms.tc};background:${ms.bg}" onchange="setTl('${m.id}',${ti},'s',this.value)">${stOpts}</select>
+        <button class="tl-del" onclick="removeTl('${m.id}',${ti})">✕</button>
+      </div>`;
+    } else {
+      return `<div class="tl-row">
+        <div class="tl-dot" style="background:${ms.c}"></div>
+        <span class="tl-date">${t.d}</span>
+        <span class="tl-text">${t.t}</span>
+        <span class="pill" style="font-size:9px;background:${ms.bg};color:${ms.tc};border-color:${ms.c}">${ms.l}</span>
+      </div>`;
+    }
+  }).join('');
+
+  const critHtml = (m.criterios||[]).map((cr, ci) => {
+    const cc = CRIT_COLORS[ci] || CRIT_COLORS[0];
+    const cs = ST[cr.status] || ST.nao;
+    if (editable) {
+      const csOpts = Object.values(ST).map(s => `<option value="${s.v}"${cr.status===s.v?' selected':''}>${s.l}</option>`).join('');
+      return `<div class="crit-row">
+        <span class="crit-pct" style="background:${cc.bg};color:${cc.tc};border-color:${cc.c}">${cr.pct}%</span>
+        <select class="crit-sel" style="border-color:${cs.c};color:${cs.tc};background:${cs.bg}" onchange="setCritStatus('${m.id}',${ci},this.value)">${csOpts}</select>
+        <input class="crit-inp" value="${cr.desc||''}" onchange="setCritDesc('${m.id}',${ci},this.value)" placeholder="Critério...">
+      </div>`;
+    } else {
+      return `<div class="crit-row">
+        <span class="crit-pct" style="background:${cc.bg};color:${cc.tc};border-color:${cc.c}">${cr.pct}%</span>
+        <span class="crit-status-badge" style="background:${cs.bg};color:${cs.tc};border-color:${cs.c}">${cs.l}</span>
+        <span class="crit-text">${cr.desc||''}</span>
+      </div>`;
+    }
+  }).join('');
+
+  const stOpts = Object.values(ST).map(s => `<option value="${s.v}"${m.status===s.v?' selected':''}>${s.l}</option>`).join('');
+
+  const titleHtml = editable
+    ? `<input class="meta-title-input" value="${m.name}" onchange="setMetaField('${m.id}','name',this.value)">`
+    : `<div class="meta-title">${m.name}</div>`;
+
+  const descHtml = editable
+    ? `<textarea class="desc-area" onchange="setMetaField('${m.id}','desc',this.value)">${m.desc||''}</textarea>`
+    : `<div class="desc-text">${m.desc||''}</div>`;
+
+  const pesoHtml = editable
+    ? `peso <input class="peso-inp" type="number" min="0" max="100" value="${m.peso}" onchange="setMetaField('${m.id}','peso',+this.value)" style="border:none;background:transparent;font-size:12px;width:36px;padding:0;font-family:inherit;color:#666;text-align:center">`
+    : `peso ${m.peso}`;
+
+  const addTlBtn = editable ? `<button class="btn btn-ghost btn-sm" style="margin-top:4px" onclick="addTl('${m.id}')">+ Etapa</button>` : '';
+
+  const statusHtml = editable
+    ? `<div class="two-col">
+        <div><div class="field-lbl">Status</div>
+        <select class="field-sel" style="border-color:${st.c};color:${st.tc};background:${st.bg}" onchange="setMetaField('${m.id}','status',this.value)">${stOpts}</select></div>
+        <div><div class="field-lbl">Prazo</div>
+        <input class="field-inp" value="${m.prazo}" onchange="setMetaField('${m.id}','prazo',this.value)"></div>
+      </div>`
+    : `<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+        <span class="pill" style="background:${st.bg};color:${st.tc};border-color:${st.c}">${st.l}</span>
+        <span class="pill" style="background:${d.bg};color:${d.tc};border-color:${d.c}">até ${m.prazo} · ${d.lbl}</span>
+      </div>`;
+
+  const obsPublished = m.obs_published || '';
+  const obsDraft = m.obs || '';
+  const hasPublished = obsPublished.trim().length > 0;
+  const obsHtml = editable
+    ? `<div class="sec-lbl" style="margin-top:12px">Observações</div>
+       <textarea class="obs-ta" id="obs-draft-${m.id}" onchange="setMetaField('${m.id}','obs',this.value)" placeholder="Escreva aqui (rascunho — só você vê)...">${obsDraft}</textarea>
+       <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+         <button class="btn btn-primary btn-sm" onclick="publishObs('${m.id}')">Publicar para colaboradora</button>
+         ${hasPublished ? `<span style="font-size:11px;color:#085041;background:#E1F5EE;padding:3px 9px;border-radius:99px;border:1px solid #A4EDC2">✓ Publicado: "${obsPublished.substring(0,40)}${obsPublished.length>40?'...':''}"</span>
+         <button class="btn btn-sm btn-danger" onclick="unpublishObs('${m.id}')">Retirar</button>` : '<span style="font-size:11px;color:#aaa">Nenhuma observação publicada</span>'}
+       </div>`
+    : (hasPublished ? `<div class="sec-lbl">Observação da gestora</div><div class="obs-text" style="border-left:3px solid #1A5C33;padding-left:10px">${obsPublished}</div>` : '');
+
+  const removeBtn = editable ? `<div class="meta-actions"><button class="btn btn-danger btn-sm" onclick="removeMeta('${p.id}','${m.id}')">Remover meta</button></div>` : '';
+
+  return `<div class="meta-card" style="border-left-color:${border}">
+    ${titleHtml}
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
+      <span class="pill pill-peso">${pesoHtml}</span>
+      <span class="pill" style="background:${d.bg};color:${d.tc};border-color:${d.c}">até ${m.prazo} · ${d.lbl}</span>
+    </div>
+    <div class="sec-lbl" style="margin-top:0">Objetivo</div>
+    ${descHtml}
+    <div class="sec-lbl">Etapas</div>
+    <div class="tl">${tlHtml}</div>
+    ${addTlBtn}
+    <div class="sec-lbl">Critérios de atingimento</div>
+    <div class="crit-box">${critHtml}</div>
+    ${statusHtml}
+    <div class="ating-row">
+      <span style="font-size:11px;color:#888">Atingimento:</span>
+      <span class="ating-badge" style="background:${at!==null?atColor+'22':'#F5F5F2'};color:${at!==null?atColor:'#999'};border-color:${at!==null?atColor:'#DDD'};font-size:13px;font-weight:700">${at!==null?at+'%':'—'}</span>
+      <span style="font-size:11px;color:#aaa">× peso ${m.peso}% = <strong>${at!==null?(at*m.peso/100).toFixed(1):' —'}</strong></span>
+      <span style="font-size:10px;color:#bbb;margin-left:6px">${done}/${m.tl.length} etapas</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" style="width:${prog}%;background:${at!==null?atColor:st.c}"></div></div>
+    ${obsHtml}
+    ${removeBtn}
+  </div>`;
+}
+
+function buildApuracao(p, col, s) {
+  const rows = p.metas.map(function(m, mi) {
+    const at = calcAtingFromTl(m.tl);
+    const contrib = at !== null ? (at * (m.peso / 100)).toFixed(1) : null;
+    const fcolor = at !== null ? fc(at) : '#B4B2A9';
+    const done = (m.tl||[]).filter(function(t){return t.s==='ok';}).length;
+    const rowBg = mi % 2 === 0 ? '#fff' : '#FAFAF8';
+    const atBadge = at !== null
+      ? '<span style="font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;background:'+fcolor+'22;color:'+fcolor+';border:1px solid '+fcolor+'">'+at+'%</span>'
+      : '<span style="color:#CCC;font-size:11px">—</span>';
+    const contribSpan = contrib !== null
+      ? '<span style="font-size:12px;font-weight:700;color:'+fcolor+'">'+contrib+'</span>'
+      : '<span style="color:#CCC;font-size:11px">—</span>';
+    return '<tr style="background:'+rowBg+'"><td style="padding:8px 10px;border-bottom:1px solid #F0F0EC;font-weight:600">'+m.name+'</td>'
+      +'<td style="padding:8px 10px;border-bottom:1px solid #F0F0EC;text-align:center;font-size:11px;color:#888">'+done+'/'+m.tl.length+'</td>'
+      +'<td style="padding:8px 10px;border-bottom:1px solid #F0F0EC;text-align:center">'+atBadge+'</td>'
+      +'<td style="padding:8px 10px;border-bottom:1px solid #F0F0EC;text-align:center;font-size:11px">'+m.peso+'%</td>'
+      +'<td style="padding:8px 10px;border-bottom:1px solid #F0F0EC;text-align:center">'+contribSpan+'</td></tr>';
+  }).join('');
+
+  return `<div class="apuracao">
+    <div style="font-size:10px;font-weight:700;color:#999;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.65rem">Apuração — ${p.name}</div>
+    <table>
+      <thead><tr>
+        <th>Meta</th><th style="text-align:center">Etapas</th>
+        <th style="text-align:center">Ating.</th>
+        <th style="text-align:center">Peso</th>
+        <th style="text-align:center">Contribuição</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot><tr>
+        <td colspan="4">Nota final ponderada</td>
+        <td style="text-align:center;color:${col};font-size:15px">${s}</td>
+      </tr></tfoot>
+    </table>
+    ${p.metas.reduce((a,m)=>a+m.peso,0)!==100?'<div style="margin-top:8px;font-size:11px;color:#B91C1C;background:#FEF0F0;border-radius:6px;padding:6px 10px">⚠ Pesos somam '+p.metas.reduce((a,m)=>a+m.peso,0)+'% (esperado: 100%)</div>':''}
+  </div>`;
+}
+
+// ── Setters ───────────────────────────────────────────────────────────────
+function markDirty() { dirty = true; }
+
+function setMetaField(mid, field, val) {
+  const r = getMeta(mid); if (!r) return;
+  r.m[field] = val;
+  markDirty();
+  if (['status','peso'].includes(field)) renderApp();
+}
+function setTl(mid, idx, field, val) {
+  const r = getMeta(mid); if (!r||!r.m.tl[idx]) return;
+  r.m.tl[idx][field] = val;
+  markDirty();
+  if (field === 's') renderApp();
+}
+function setCritStatus(mid, idx, val) {
+  const r = getMeta(mid); if (!r) return;
+  r.m.criterios[idx].status = val;
+  markDirty();
+  renderApp();
+}
+function setCritDesc(mid, idx, val) {
+  const r = getMeta(mid); if (!r) return;
+  r.m.criterios[idx].desc = val;
+  markDirty();
+}
+function addTl(mid) {
+  const r = getMeta(mid); if (!r) return;
+  r.m.tl.push({d:'', t:'', s:'nao'});
+  markDirty(); renderApp();
+}
+function removeTl(mid, idx) {
+  const r = getMeta(mid); if (!r) return;
+  r.m.tl.splice(idx, 1);
+  markDirty(); renderApp();
+}
+let uidC = 200;
+function addMeta(pid) {
+  const p = getPessoa(pid); if (!p) return;
+  const id = 'm' + (uidC++);
+  p.metas.push({id, name:'Nova meta', peso:0, prazo:'30/Jun', status:'nao', obs:'', desc:'',
+    criterios:[{pct:80,desc:'',status:'nao'},{pct:100,desc:'',status:'nao'},{pct:120,desc:'',status:'nao'}],
+    tl:[]});
+  markDirty(); renderApp();
+}
+function removeMeta(pid, mid) {
+  const p = getPessoa(pid); if (!p) return;
+  p.metas = p.metas.filter(m => m.id !== mid);
+  markDirty(); renderApp();
+}
+function addPessoa() {
+  const avcs = ['av-teal','av-purple','av-coral','av-blue'];
+  const id = 'p' + (uidC++);
+  DATA.push({id, name:'Novo colaborador', area:'', av:'??', avc:avcs[DATA.length%4], metas:[]});
+  markDirty(); renderApp();
+}
+function removePessoa(pid) {
+  DATA = DATA.filter(p => p.id !== pid);
+  if (filter === pid) filter = 'all';
+  markDirty(); renderApp();
+}
+function setFilter(id, btn) {
+  filter = id;
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderApp();
+}
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.tabpane').forEach(t => t.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('tab-'+name).classList.add('on');
+  if (name === 'resumo') renderResumo();
+  if (name === 'rv') renderRV();
+}
+
+function publishObs(mid) {
+  const r = getMeta(mid); if (!r) return;
+  const ta = document.getElementById('obs-draft-'+mid);
+  const val = ta ? ta.value : r.m.obs || '';
+  if (!val.trim()) { showToast('Escreva algo antes de publicar.', true); return; }
+  r.m.obs_published = val;
+  r.m.obs = val;
+  markDirty();
+  renderApp();
+  showToast('Observação publicada!');
+}
+
+function unpublishObs(mid) {
+  const r = getMeta(mid); if (!r) return;
+  r.m.obs_published = '';
+  markDirty();
+  renderApp();
+  showToast('Observação retirada.');
+}
+
+function renderResumo() {
+  const ranked = [...DATA].map(p => ({...p, s:scoreP(p)})).sort((a,b) => b.s-a.s);
+  const rankHtml = ranked.map((p,i) => {
+    const col = sc(p.s);
+    const nCol = i===0?'#1D9E75':i===1?'#378ADD':'#EF9F27';
+    return `<div class="rank-card">
+      <div style="font-size:22px;font-weight:700;color:${nCol};width:28px;text-align:center">${i+1}</div>
+      <div class="p-av ${p.avc}" style="width:32px;height:32px;font-size:11px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">${p.av}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:700">${p.name}</div><div style="font-size:11px;color:#888">${p.area}</div></div>
+      <div style="text-align:right"><div style="width:140px;height:5px;background:#eee;border-radius:99px;overflow:hidden;margin-bottom:3px"><div style="height:100%;width:${Math.min(p.s/1.2,100)}%;background:${col};border-radius:99px"></div></div>
+      <div style="font-size:13px;font-weight:700;color:${col}">${p.s}</div></div>
+    </div>`;
+  }).join('');
+
+  const rows = DATA.flatMap(p => p.metas.map(m => {
+    const st = ST[m.status]||ST.nao;
+    const at = calcAtingFromTl(m.tl);
+    const fcolor = at!==null?fc(at):'#B4B2A9';
+    const d = dl(m.prazo);
+    return `<tr>
+      <td><span class="sum-av ${p.avc}" style="width:22px;height:22px;font-size:9px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;vertical-align:middle;margin-right:5px">${p.av}</span>${p.name}</td>
+      <td style="font-weight:600">${m.name}</td>
+      <td style="text-align:center">${m.peso}%</td>
+      <td><span class="pill" style="background:${d.bg};color:${d.tc};border-color:${d.c}">${m.prazo}·${d.lbl}</span></td>
+      <td><span class="pill" style="background:${st.bg};color:${st.tc};border-color:${st.c}">${st.l}</span></td>
+      <td style="text-align:center"><span style="font-size:11px;font-weight:700;color:${fcolor}">${at!==null?at+'%':'—'}</span></td>
+    </tr>`;
+  })).join('');
+
+  document.getElementById('tab-resumo').innerHTML = `
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:10px;font-weight:700;color:#999;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.65rem">Ranking</div>
+      ${rankHtml}
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:700;color:#999;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.65rem">Consolidado</div>
+      <div style="overflow-x:auto">
+        <table class="res-table"><thead><tr>
+          <th>Pessoa</th><th>Meta</th><th>Peso</th><th>Prazo</th><th>Status</th><th>Ating.</th>
+        </tr></thead><tbody>${rows}</tbody></table>
+      </div>
+    </div>`;
+}
+
+// ── Default Data ──────────────────────────────────────────────────────────
+function getDefaultData() {
+  return [
+  {id:'yas',name:'Yasmim',area:'FP&A',av:'YA',avc:'av-teal',
+   metas:[
+    {id:'ym1',name:'Motor de precificação automatizada',peso:60,prazo:'30/Jun',status:'nao',obs:'',
+     desc:'Ferramenta com IA para precificação ágil. Fase 1: automatizar precificações manuais. Fase 2: motor com monitoramento de preço de compra e alertas de variação de custo.',
+     criterios:[{pct:80,desc:'Ferramenta entregue com funcionalidades básicas',status:'nao'},{pct:100,desc:'Fase 1 em produção e em uso pela equipe',status:'nao'},{pct:120,desc:'Fase 2 entregue com motor e alertas de variação',status:'nao'}],
+     tl:[{d:'30/Abr',t:'Requisitos e escopo da Fase 1',s:'nao'},{d:'31/Mai',t:'Fase 1 em produção',s:'nao'},{d:'30/Jun',t:'Motor com alertas (Fase 2)',s:'nao'}]},
+    {id:'ym2',name:'Modelo de forecast — finalização',peso:20,prazo:'15/Jun',status:'nao',obs:'',
+     desc:'Co-liderança com Vanessa. Três entregas sequenciais.',
+     criterios:[{pct:80,desc:'Plano de contas reestruturado e modelo parcialmente implementado',status:'nao'},{pct:100,desc:'Modelo implementado para todos os meses até 15/05',status:'nao'},{pct:120,desc:'Visualização entregue antes de 15/06 com validação das áreas',status:'nao'}],
+     tl:[{d:'30/04',t:'Reestruturação do plano de contas',s:'nao'},{d:'15/05',t:'Modelo para todos os meses',s:'nao'},{d:'15/06',t:'Visualização de forecast por área',s:'nao'}]},
+    {id:'ym3',name:'Entrega do realizado',peso:20,prazo:'15/Mai',status:'nao',obs:'',
+     desc:'Entrega do realizado retroativo e dos meses seguintes até o dia 15 de cada mês.',
+     criterios:[{pct:80,desc:'Realizado retroativo entregue com atraso ou parcialmente',status:'nao'},{pct:100,desc:'Entregue até dia 15 de cada mês',status:'nao'},{pct:120,desc:'Entrega até dia 15 com análise de desvios e comentários',status:'nao'}],
+     tl:[{d:'15/Mai',t:'Realizado retroativo entregue',s:'nao'},{d:'15/Jun',t:'Realizado junho entregue',s:'nao'}]},
+  ]},
+  {id:'van',name:'Vanessa',area:'FP&A',av:'VA',avc:'av-purple',
+   metas:[
+    {id:'vm1',name:'Modelo de forecast — finalização',peso:60,prazo:'15/Jun',status:'nao',obs:'',
+     desc:'Co-liderança com Yasmim. Mesmos marcos e datas.',
+     criterios:[{pct:80,desc:'Plano de contas reestruturado e modelo parcialmente implementado',status:'nao'},{pct:100,desc:'Modelo implementado para todos os meses até 15/05',status:'nao'},{pct:120,desc:'Visualização entregue antes de 15/06 com validação',status:'nao'}],
+     tl:[{d:'30/04',t:'Reestruturação do plano de contas',s:'nao'},{d:'15/05',t:'Modelo para todos os meses',s:'nao'},{d:'15/06',t:'Visualização de forecast por área',s:'nao'}]},
+    {id:'vm2',name:'Entrega do realizado',peso:20,prazo:'15/Mai',status:'nao',obs:'',
+     desc:'Entrega do realizado retroativo e dos meses seguintes até o dia 15 de cada mês.',
+     criterios:[{pct:80,desc:'Realizado retroativo entregue com atraso ou parcialmente',status:'nao'},{pct:100,desc:'Entregue até dia 15 de cada mês',status:'nao'},{pct:120,desc:'Entrega até dia 15 com análise de desvios e comentários',status:'nao'}],
+     tl:[{d:'15/Mai',t:'Realizado retroativo entregue',s:'nao'},{d:'15/Jun',t:'Realizado junho entregue',s:'nao'}]},
+    {id:'vm3',name:'Sinistros / precificação legada (FDA)',peso:20,prazo:'30/Jun',status:'nao',obs:'',
+     desc:'Estruturar gestão de sinistros ou projeto FDA (assinaturas com preços antigos).',
+     criterios:[{pct:80,desc:'Escopo definido e base de dados estruturada',status:'nao'},{pct:100,desc:'Dashboard com métricas de impacto financeiro',status:'nao'},{pct:120,desc:'Recomendação validada com o time de negócio',status:'nao'}],
+     tl:[{d:'30/Abr',t:'Definição de escopo',s:'nao'},{d:'31/Mai',t:'Base de dados e métricas',s:'nao'},{d:'30/Jun',t:'Dashboard + recomendação',s:'nao'}]},
+  ]},
+  {id:'isa',name:'Isadora',area:'Compras',av:'IS',avc:'av-coral',
+   metas:[
+    {id:'im1',name:'Padronização itens SAP — Lab/Log',peso:20,prazo:'31/Mai',status:'nao',obs:'',
+     desc:'Padronizar cadastro de itens no SAP para laboratório e logística.',
+     criterios:[{pct:80,desc:'Mapeamento concluído e padronização parcialmente aplicada',status:'nao'},{pct:100,desc:'Todos os itens padronizados e validados no SAP',status:'nao'},{pct:120,desc:'Documentação entregue e processo replicável',status:'nao'}],
+     tl:[{d:'30/Abr',t:'Mapeamento dos itens pendentes',s:'nao'},{d:'15/Mai',t:'Aplicação no SAP',s:'nao'},{d:'31/Mai',t:'Validação e documentação',s:'nao'}]},
+    {id:'im2',name:'Inclusão de 20 novos SKUs',peso:20,prazo:'30/Jun',status:'nao',obs:'',
+     desc:'Meta quantitativa: cadastrar 20 novos SKUs no sistema até fim do quarter.',
+     criterios:[{pct:80,desc:'16 SKUs incluídos',status:'nao'},{pct:100,desc:'20 SKUs cadastrados e validados',status:'nao'},{pct:120,desc:'24 SKUs incluídos',status:'nao'}],
+     tl:[{d:'30/Abr',t:'Definição dos 20 SKUs prioritários',s:'nao'},{d:'31/Mai',t:'10 SKUs incluídos',s:'nao'},{d:'30/Jun',t:'20 SKUs concluídos',s:'nao'}]},
+    {id:'im3',name:'Redução de atraso no envio de pedidos',peso:60,prazo:'30/Jun',status:'nao',obs:'',
+     desc:'Reduzir o percentual de pedidos enviados em atraso. Baseline: 5,93% (jan–mar/26).',
+     criterios:[{pct:80,desc:'% de atraso ≤ 5,0% ao mês',status:'nao'},{pct:100,desc:'% de atraso ≤ 3,5% ao mês',status:'nao'},{pct:120,desc:'% de atraso ≤ 2,0% ao mês',status:'nao'}],
+     tl:[{d:'30/Abr',t:'Levantamento de causa raiz',s:'nao'},{d:'31/Mai',t:'Atingir ≤ 4,0% de atraso',s:'nao'},{d:'30/Jun',t:'Atingir ≤ 3,5% de atraso',s:'nao'}]},
+  ]},
+  {id:'may',name:'Mayara',area:'Coordenação',av:'MA',avc:'av-blue',
+   metas:[
+    {id:'mm1',name:'Performance do time',peso:50,prazo:'30/Jun',status:'nao',obs:'',
+     desc:'Garantir que o time atinja os objetivos do Q2.',
+     criterios:[{pct:80,desc:'Score médio do time ≥ 70',status:'nao'},{pct:100,desc:'Score médio do time ≥ 85',status:'nao'},{pct:120,desc:'Score médio do time ≥ 100',status:'nao'}],
+     tl:[{d:'Mai',t:'Check-in de meio de quarter',s:'nao'},{d:'30/Jun',t:'Avaliação final',s:'nao'}]},
+    {id:'mm2',name:'Evolução do S&OP',peso:30,prazo:'30/Jun',status:'nao',obs:'',
+     desc:'Avançar as versões do S&OP para suporte à tomada de decisão de compras.',
+     criterios:[{pct:80,desc:'Ajustes na v1 implementados e validados',status:'nao'},{pct:100,desc:'V2 entregue com melhorias para tomada de decisão',status:'nao'},{pct:120,desc:'Cadência mensal estabelecida com dono definido',status:'nao'}],
+     tl:[{d:'30/Abr',t:'Levantamento de melhorias',s:'nao'},{d:'31/Mai',t:'V2 entregue',s:'nao'},{d:'30/Jun',t:'Cadência estabelecida',s:'nao'}]},
+    {id:'mm3',name:'Gestão de pessoas',peso:20,prazo:'30/Jun',status:'nao',obs:'',
+     desc:'1:1s regulares, feedback estruturado e desenvolvimento das analistas no Q2.',
+     criterios:[{pct:80,desc:'1:1s quinzenais com pelo menos 2 analistas',status:'nao'},{pct:100,desc:'1:1s quinzenais com as 3 analistas + feedback estruturado',status:'nao'},{pct:120,desc:'Ao menos uma analista conduziu entrega autônoma para stakeholders',status:'nao'}],
+     tl:[{d:'Abr',t:'Iniciar 1:1s quinzenais',s:'nao'},{d:'Jun',t:'Feedback estruturado entregue',s:'nao'}]},
+  ]},
+  ];
+}
+
+function getDefaultRVConfig() {
+  return {
+    pessoas: {
+      yas:  {salario: 0, multiplo: 0, pesoA: 0.5, pesoB: 0.5},
+      van:  {salario: 0, multiplo: 0, pesoA: 0.5, pesoB: 0.5},
+      isa:  {salario: 0, multiplo: 0, pesoA: 0.5, pesoB: 0.5},
+      may:  {salario: 0, multiplo: 0, pesoA: 0.6, pesoB: 0.4},
+    },
+    trimestres: [
+      {
+        id: 'q1-2026', label: 'Q1 2026',
+        meses: [
+          {id:'jan26', label:'Jan/26', atingCia: 97.4, gatilho: true},
+          {id:'fev26', label:'Fev/26', atingCia: 98.0, gatilho: true},
+          {id:'mar26', label:'Mar/26', atingCia: 101.41, gatilho: true},
+        ],
+        atingProjetos: null,
+        dataPagtoA: 'Até 5º dia útil do mês seguinte',
+        dataPagtoB: 'Junto com Parcela A de Mar/26',
+        fechado: true,
+      },
+      {
+        id: 'q2-2026', label: 'Q2 2026',
+        meses: [
+          {id:'abr26', label:'Abr/26', atingCia: null, gatilho: null},
+          {id:'mai26', label:'Mai/26', atingCia: null, gatilho: null},
+          {id:'jun26', label:'Jun/26', atingCia: null, gatilho: null},
+        ],
+        atingProjetos: null,
+        dataPagtoA: '',
+        dataPagtoB: '',
+        fechado: false,
+      },
+    ]
+  };
+}
+
+
+function calcFatorRV(ating) {
+  if (ating === null || ating === undefined || ating === '') return null;
+  var v = parseFloat(ating) / 100;
+  var t = [[0,0],[0.8,0],[0.85,0.53],[0.9,0.63],[0.95,0.78],[1,1],[1.2,1.2],[1.5,1.5]];
+  if (v < t[1][0]) return 0;
+  if (v >= t[t.length-1][0]) return t[t.length-1][1];
+  for (var i = 1; i < t.length-1; i++) {
+    if (v >= t[i][0] && v < t[i+1][0]) {
+      var a = t[i], b = t[i+1];
+      return Math.round((a[1] + (v-a[0])/(b[0]-a[0])*(b[1]-a[1])) * 10000) / 10000;
+    }
+  }
+  return null;
+}
+
+function fmtBRL(v) {
+  return v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+}
+
+function setRVField(path, value) {
+  var parts = path.split('.');
+  var obj = RV_CONFIG;
+  for (var i = 0; i < parts.length-1; i++) {
+    obj = obj[parts[i]];
+  }
+  var last = parts[parts.length-1];
+  obj[last] = (value === '' || value === null) ? null : isNaN(+value) ? value : +value;
+  markDirty();
+  renderRV();
+}
+
+function mkInp(type, val, placeholder, path, extra) {
+  extra = extra || '';
+  var v = (val !== null && val !== undefined) ? val : '';
+  return '<input class="rv-inp" type="' + type + '" value="' + v + '" placeholder="' + placeholder + '" ' + extra + ' onchange="setRVField(\'' + path + '\',this.value)">';
+}
+
+function renderRV() {
+  var el = document.getElementById('tab-rv');
+  if (!el || !RV_CONFIG) return;
+  var cfg = RV_CONFIG;
+  var showAll = isAdmin;
+  var pessoasToShow = showAll ? DATA : DATA.filter(function(p){ return p.id === pessoaId; });
+
+  var html = '';
+
+  // Config section (admin only)
+  if (isAdmin) {
+    var pCards = DATA.map(function(p) {
+      var c = cfg.pessoas[p.id] || {salario:0, multiplo:0, pesoA:0.5, pesoB:0.5};
+      var pid = p.id;
+      return '<div class="rv-person-card">'
+        + '<div class="rv-person-name"><div class="p-av ' + p.avc + '" style="width:22px;height:22px;font-size:9px;font-weight:700;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">' + p.av + '</div>' + p.name + '</div>'
+        + '<div class="rv-field"><label>Salário Base (R$)</label>' + mkInp('number', c.salario||'', '0,00', 'pessoas.'+pid+'.salario') + '</div>'
+        + '<div class="rv-field"><label>Múltiplo Anual</label>' + mkInp('number', c.multiplo||'', 'ex: 2.0', 'pessoas.'+pid+'.multiplo', 'step="0.1"') + '</div>'
+        + '<div class="rv-field"><label>Peso Parcela A (%)</label>' + mkInp('number', Math.round((c.pesoA||0)*100), '', 'pessoas.'+pid+'.pesoA', 'data-pct="1"') + '</div>'
+        + '<div class="rv-field"><label>Peso Parcela B (%)</label>' + mkInp('number', Math.round((c.pesoB||0)*100), '', 'pessoas.'+pid+'.pesoB', 'data-pct="1"') + '</div>'
+        + '</div>';
+    }).join('');
+    html += '<div class="rv-section"><div class="rv-section-title">Configuração por colaborador <span style="font-size:10px;color:#888;font-weight:400">Só você vê</span></div>'
+      + '<div class="rv-config-grid">' + pCards + '</div></div>';
+  }
+
+  // Trimestres
+  cfg.trimestres.forEach(function(trim, ti) {
+    var mesesHtml = trim.meses.map(function(mes, mi) {
+      var fat = calcFatorRV(mes.atingCia);
+      var gatilho = mes.atingCia !== null ? mes.atingCia >= 80 : null;
+      var gc = gatilho === null ? '#aaa' : gatilho ? '#1D9E75' : '#E24B4A';
+      var gl = gatilho === null ? '—' : gatilho ? '✓ Paga' : '✗ Não paga';
+
+      var atingHtml = isAdmin
+        ? mkInp('number', mes.atingCia, 'ex: 97.4', 'trimestres.'+ti+'.meses.'+mi+'.atingCia', 'step="0.01" style="margin-top:4px"')
+        : '<div style="font-size:14px;font-weight:700;text-align:right;margin-top:4px">' + (mes.atingCia !== null ? mes.atingCia+'%' : '—') + '</div>';
+
+      var parcA = pessoasToShow.map(function(p) {
+        var c = cfg.pessoas[p.id] || {};
+        if (!c.salario || !c.multiplo || !gatilho || fat === null) return '';
+        var val = c.salario * c.multiplo / 12 * (c.pesoA||0.5) * fat;
+        return '<div style="display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid #E8F5EE">'
+          + '<span>' + p.name + '</span>'
+          + '<span style="font-weight:700;color:#1A5C33">' + fmtBRL(val) + '</span>'
+          + '</div>';
+      }).join('');
+
+      return '<div class="rv-month">'
+        + '<div class="rv-month-lbl">' + mes.label + '</div>'
+        + '<div class="rv-field"><label>Ating. Cia (%)</label>' + atingHtml + '</div>'
+        + '<div style="display:flex;justify-content:space-between;font-size:11px;margin-top:6px"><span style="color:#888">Fator:</span><span style="font-weight:700">' + (fat !== null ? fat : '—') + '</span></div>'
+        + '<div style="display:flex;justify-content:space-between;font-size:11px;margin-top:2px"><span style="color:#888">Gatilho:</span><span style="font-weight:700;color:'+gc+'">'+gl+'</span></div>'
+        + (parcA ? '<div class="rv-result" style="margin-top:8px"><div style="font-size:10px;font-weight:700;color:#085041;margin-bottom:4px">Parcela A</div>' + parcA + '</div>' : '')
+        + '</div>';
+    }).join('');
+
+    var fatProj = calcFatorRV(trim.atingProjetos);
+    var projHtml = isAdmin
+      ? mkInp('number', trim.atingProjetos, 'ex: 100', 'trimestres.'+ti+'.atingProjetos', 'step="0.01" style="width:120px"')
+      : '<span style="font-size:14px;font-weight:700">' + (trim.atingProjetos !== null ? trim.atingProjetos+'%' : 'Aguardando') + '</span>';
+
+    var dataBHtml = isAdmin
+      ? mkInp('text', trim.dataPagtoB||'', 'ex: Até 05/Jul', 'trimestres.'+ti+'.dataPagtoB', 'style="width:180px"')
+      : '<span style="font-size:12px;color:#555">' + (trim.dataPagtoB || 'A definir') + '</span>';
+
+    var parcB = pessoasToShow.map(function(p) {
+      var c = cfg.pessoas[p.id] || {};
+      if (!c.salario || !c.multiplo || fatProj === null) return '';
+      var val = c.salario * c.multiplo / 12 * (c.pesoB||0.5) * fatProj * 3;
+      var formula = '(' + fmtBRL(c.salario) + ' × ' + c.multiplo + 'x ÷ 12) × ' + Math.round((c.pesoB||0.5)*100) + '% × ' + fatProj + ' × 3 = ' + fmtBRL(val);
+      return '<div style="border-bottom:1px solid #E8F5EE;padding:6px 0">'
+        + '<div style="display:flex;justify-content:space-between">'
+        + '<span style="font-size:12px">' + p.name + '</span>'
+        + '<span style="font-weight:700;color:#1A5C33">' + fmtBRL(val) + '</span>'
+        + '</div>'
+        + '<div class="rv-formula">' + formula + '</div>'
+        + '</div>';
+    }).join('');
+
+    // Chart
+    var chartData = pessoasToShow.map(function(p) {
+      var c = cfg.pessoas[p.id] || {salario:0, multiplo:0, pesoA:0.5, pesoB:0.5};
+      var tA = 0;
+      trim.meses.forEach(function(mes) {
+        var f = calcFatorRV(mes.atingCia);
+        if (mes.atingCia >= 80 && f !== null && c.salario && c.multiplo) {
+          tA += c.salario * c.multiplo / 12 * (c.pesoA||0.5) * f;
+        }
+      });
+      var tB = (fatProj !== null && c.salario && c.multiplo) ? c.salario * c.multiplo / 12 * (c.pesoB||0.5) * fatProj * 3 : 0;
+      return {p:p, tA:tA, tB:tB, tot:tA+tB};
+    });
+    var maxV = Math.max.apply(null, chartData.map(function(d){return d.tot;})) || 1;
+    var bars = chartData.map(function(d) {
+      var hA = Math.round(d.tA/maxV*80);
+      var hB = Math.round(d.tB/maxV*80);
+      return '<div class="chart-bar-wrap">'
+        + '<div class="chart-bar-val" style="color:#1A5C33;font-size:9px">' + (d.tot > 0 ? fmtBRL(d.tot) : '—') + '</div>'
+        + '<div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:80px;gap:1px">'
+        + (hB > 0 ? '<div style="width:100%;height:'+hB+'px;background:#A4EDC2;border-radius:3px 3px 0 0;min-height:4px"></div>' : '')
+        + (hA > 0 ? '<div style="width:100%;height:'+hA+'px;background:#1A5C33;min-height:4px"></div>' : '')
+        + '</div>'
+        + '<div class="chart-bar-lbl">' + d.p.name + '</div>'
+        + '</div>';
+    }).join('');
+
+    html += '<div class="rv-section">'
+      + '<div class="rv-section-title">' + trim.label + (trim.fechado ? ' <span style="font-size:10px;background:#E1F5EE;color:#085041;padding:2px 7px;border-radius:99px;font-weight:500;border:1px solid #A4EDC2">Fechado</span>' : '') + '</div>'
+      + '<div style="font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.65rem">Parcela A — Mensal</div>'
+      + '<div class="rv-grid">' + mesesHtml + '</div>'
+      + '<div style="border-top:1px solid #EEEEEA;padding-top:1rem;margin-top:.5rem">'
+      + '<div style="font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.65rem">Parcela B — Projetos Trimestral</div>'
+      + '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">'
+      + '<div><div style="font-size:10px;color:#888;margin-bottom:3px">Ating. Projetos (%)</div>' + projHtml + '</div>'
+      + '<div><div style="font-size:10px;color:#888;margin-bottom:3px">Fator</div><div style="font-size:14px;font-weight:700;color:' + (fatProj!==null?'#1A5C33':'#aaa') + '">' + (fatProj!==null?fatProj:'—') + '</div></div>'
+      + '<div><div style="font-size:10px;color:#888;margin-bottom:3px">Pagamento</div>' + dataBHtml + '</div>'
+      + '</div>'
+      + (parcB ? '<div class="rv-result">' + parcB + '</div>' : '<div style="font-size:12px;color:#aaa;font-style:italic">Preencha o atingimento dos projetos para calcular.</div>')
+      + '</div>'
+      + '<div class="chart-wrap"><div style="font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Total RV no Trimestre</div>'
+      + '<div class="chart-bars">' + bars + '</div>'
+      + '<div style="display:flex;gap:12px;font-size:10px;color:#666;margin-top:4px">'
+      + '<span><span style="display:inline-block;width:10px;height:10px;background:#1A5C33;border-radius:2px;margin-right:3px"></span>Parcela A</span>'
+      + '<span><span style="display:inline-block;width:10px;height:10px;background:#A4EDC2;border-radius:2px;margin-right:3px"></span>Parcela B</span>'
+      + '</div></div>'
+      + '</div>';
+  });
+
+  el.innerHTML = html;
+}
+
+</script>
+</body>
+</html>
